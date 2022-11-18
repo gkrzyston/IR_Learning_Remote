@@ -128,12 +128,10 @@ int read_acknowledgement(int fd) {
 void handshake_fail(int fd) {
     printf(" \nDevice not found...\nTry Again? (y/n): ");
     
-    size_t bytes = 4;
-    char* empty_buf = (char *) malloc (bytes + 1);
-    getline(&empty_buf, &bytes, stdin);
-    char c =  empty_buf[0];
+    char buf[1024] = {'\0'};
+    fgets(buf, 1024, stdin);
 
-    switch(c) {
+    switch(buf[0]) {
         case 'y':
             handshake(fd);
             break;
@@ -197,6 +195,7 @@ void issue_xbee_command(int fd, Command command, int argc, char** argv) {
 int main()
 {
     int fd = open_interface();
+    if (fd < 0) exit(1);
     handshake(fd);
     issue_xbee_command(fd, IMPORT_CONFIGURATION, 0, NULL);
     issue_xbee_command(fd, QUIT, 0, NULL);
