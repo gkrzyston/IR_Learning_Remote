@@ -1,7 +1,7 @@
 #ifndef XBEE
 #define XBEE
 
-#include <stdint.h>
+#include "serial_interface.h"
 
 typedef enum Commands{
     /* 
@@ -31,10 +31,10 @@ typedef enum Commands{
     QUIT
 } Command;
 
-int8_t handshake(int);
-int8_t handshake_fail(int);
+int8_t init_xbee();
 
-int read_acknowledgement(int fd);
-int8_t issue_xbee_command(int fd, Command command, int argc, char** argv);
+int8_t handshake();
+
+int8_t issue_xbee_command(Command command/* , int argc, char** argv */);
 
 #endif /* !XBEE */
