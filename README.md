@@ -1,12 +1,2 @@
-# EECS373_IR_Learning_Remote
-Creating an IR Learning Remote for our EECS 373 Final Project.
-## Tasks
-- [ ] Power System  
-- [ ] Wireless Connectivity
-- [ ] Button Matrix
-- [ ] Touchscreen Functionality
-- [ ] CLI/TUI/GUI Interface
-- [ ] Haptic Feedback
-- [ ] Manufacture Enclosure
-## Timeframe
-TBD
+# EECS373_IR_Learning_Remote XBee Functionality
+Setting up wireless connectivity for our Learning Remote so it can be controlled from a computer.
