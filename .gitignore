@@ -1,4 +1,6 @@
 *
 !.gitignore
 !main.c
+!controller.c
+!controller.h
 !README.md
