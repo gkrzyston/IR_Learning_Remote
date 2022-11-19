@@ -6,4 +6,4 @@ Trunk should house the current IOC, main.c and other files which will be used to
 ### Development Branches:
 All code being developed for the project should find its way into the applicable dev/<module> branch when it is in a working state.  In-progress work which does not compile or work properly can be stored at dev/<module>/<your_name>.
 ### Command Line Interface:
-The CLI is housed under release/interface and dev/interface.  Use dev/interface for making any changes and general development.  Release is reserved for fully functioning releases of the interface program (ie. when in a usable state and after each completed feature is added thereafter).  Do not push code that does not compile to either branch - especially the release branch.  Temporary files to sync between computers can be stored on dev/interface/<your name> if needed.
+The CLI is housed under dev/interface.  Do not push code that does not compile.  Temporary files to sync between computers can be stored on dev/interface/<your_name> if needed.
