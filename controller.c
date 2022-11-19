@@ -5,11 +5,7 @@
  *      Author: mcprisk
  */
 
-#include "stm32f4xx_hal.h"
 #include "controller.h"
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 
 static const char* deliminator = "\n";
 static const char* section_deliminator = ",";

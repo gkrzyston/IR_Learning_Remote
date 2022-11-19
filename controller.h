@@ -8,7 +8,10 @@
 #ifndef SRC_CONTROLLER_H_
 #define SRC_CONTROLLER_H_
 
+#include "stm32f4xx_hal.h"
 #include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 typedef struct Commands {
 	uint8_t UART_Data;
@@ -62,6 +65,6 @@ void rename_device(char* new_name, uint8_t device, Controller* controller);
 void add_device(Controller* controller);
 void delete_device(uint8_t device, Controller* controller);
 
-void export_configuration(UART_HandleTypeDef * huart, Controller* controller);
+void export_configuration(Controller* controller);
 
 #endif /* SRC_CONTROLLER_H_ */

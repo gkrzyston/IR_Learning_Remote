@@ -54,7 +54,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void init_xbee_communication();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -69,8 +69,6 @@ static void MX_USART1_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	// TODO: Restore Saved Devices
-	init_default_controller(&controller);
 
   /* USER CODE END 1 */
 
@@ -94,7 +92,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_IT(&huart1, UART1_rxBuffer, 1);
+  // TODO: Restore Saved Devices
+  init_default_controller(&controller);
+  init_xbee_communication();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -249,12 +249,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     	//import_configuration();
     } else if (!strcmp((char*)UART1_rxBuffer,"icon")) {
     	// If the host wants to import, client needs to export
-    	export_configuration(huart, &controller);
-    	// char message[] = "I just sent a big packet!";
-    	// HAL_UART_Transmit(&huart1, (uint8_t *)message, strlen(message), 100);
+    	export_configuration(&controller);
     }
 
     HAL_UART_Receive_IT(huart, UART1_rxBuffer, 4);
+}
+
+void init_xbee_communication() {
+	HAL_UART_Receive_IT(&huart1, UART1_rxBuffer, 1);
 }
 /* USER CODE END 4 */
 
