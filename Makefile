@@ -1,7 +1,7 @@
 CXX = gcc
 CXXFLAGS = -std=c11 -Wconversion -Wall -Werror -Wextra -pedantic -D _DEFAULT_SOURCE
 SOURCES = $(wildcard *.c)
-EXECUTABLE = cli
+EXECUTABLE = irlm
 
 release: CXXFLAGS += -O3 -DNDEBUG
 release:
