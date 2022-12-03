@@ -105,26 +105,36 @@ int main(void)
   // Initialize Button Brightness
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200);
-
-
-
+  update_buttons();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint8_t button = 0;
   while (1)
   {
-	  //enable_all_buttons();
-	  enable_button(1);
-	  enable_button(3);
-	  enable_button(7);
-	  enable_button(9);
-	  update_buttons();
-	  HAL_Delay(1000);
+	  // Check if a button is pressed
+	  button = poll_buttons();
+	  if (button) {
+		  // if so, toggle the LED on that button
+		  toggle_button(button);
+		  update_buttons();
+	  }
+	  // Wait for button to be released
+	  while (poll_buttons() == button);
 
-	  disable_all_buttons();
-	  update_buttons();
-	  HAL_Delay(1000);
+	  // Flashing Buttons Example
+	  //enable_all_buttons();
+	  //enable_button(1);
+	  //enable_button(3);
+	  //enable_button(7);
+	  //enable_button(9);
+	  //update_buttons();
+	  //HAL_Delay(1000);
+
+	  //disable_all_buttons();
+	  //update_buttons();
+	  //HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

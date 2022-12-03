@@ -1,5 +1,8 @@
-../Core/Src/buttons.c:20:6:enable_button	16	static
-../Core/Src/buttons.c:30:6:disable_button	16	static
-../Core/Src/buttons.c:40:6:enable_all_buttons	16	static
-../Core/Src/buttons.c:47:6:disable_all_buttons	16	static
-../Core/Src/buttons.c:54:6:update_buttons	24	static
+../Core/Src/buttons.c:16:6:enable_button	16	static
+../Core/Src/buttons.c:26:6:disable_button	16	static
+../Core/Src/buttons.c:36:6:toggle_button	16	static
+../Core/Src/buttons.c:46:6:enable_all_buttons	16	static
+../Core/Src/buttons.c:53:6:disable_all_buttons	16	static
+../Core/Src/buttons.c:60:6:toggle_all_buttons	16	static
+../Core/Src/buttons.c:67:6:update_buttons	24	static
+../Core/Src/buttons.c:74:9:poll_buttons	8	static
