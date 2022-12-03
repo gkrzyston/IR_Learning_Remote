@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ssd1306.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,12 +35,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define RST_LOW() HAL_GPIO_WritePin(OLED_RST_Port, OLED_RST_Pin, GPIO_PIN_RESET)
-#define RST_HIGH() HAL_GPIO_WritePin(OLED_RST_Port, OLED_RST_Pin, GPIO_PIN_SET)
-#define CS_LOW() HAL_GPIO_WritePin(OLED_CS_Port, OLED_CS_Pin, GPIO_PIN_RESET)
-#define CS_HIGH() HAL_GPIO_WritePin(OLED_CS_Port, OLED_CS_Pin, GPIO_PIN_SET)
-#define DC_LOW() HAL_GPIO_WritePin(OLED_DC_Port, OLED_DC_Pin, GPIO_PIN_RESET)
-#define DC_HIGH() HAL_GPIO_WritePin(OLED_DC_Port, OLED_DC_Pin, GPIO_PIN_SET)
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -49,43 +44,7 @@ SPI_HandleTypeDef hspi2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint8_t init_display_cmds[] = {
-		0xAE, // Turn Display Off to Sleep Mode
-		0xD5, // Set Display Clock Divide
-		0x80, // Default Oscillator Frequency and Divide Ratio
-		0xA8, // Set Multiplex Ratio
-		0x1F, // 32 MUX
-		0xD3, // Set Display Offset
-		0x00, // No Vertical Display Offset
-		0x40, // Set Display Start Line to Zero
-		0x8D, // Set the Charge Pump Status
-		0x14, // Enable the Charge Pump
-		0x20, // Set Memory Addressing Mode
-		0x00, // Horizontal Addressing Mode
-		0xA1, // Set Segment Re-map (Column Address 127 = SEG0)
-		0xC8, // Set COM Output Scan Direction to remapped mode.
-		0xDA, // Set COM Pins
-		0x02, // Sequential Pin Configuration, disable L/R remap.
-		0x81, // Set Contrast Control
-		0x8F, // Slightly Higher than Default Contrast
-		0xD9, // Set Pre-charge Period
-		0xF1, // Maximum Phase 2 Period, Lower Phase 1 Period
-		0xDB, // Set VCOMH Deselect Level
-		0x40, // ~0.89*VCC
-		0xA4, // Turn on Display, Resuming to RAM Content
-		0xA6, // Set Normal Display Colors
-		0x2E, // Deactivate Scrolling
-		0xAF, // Turn Display to Normal Mode
-};
 
-uint8_t init_draw_cmds[] = {
-		0x22, // Set Page Address
-		0x00, // Start Address
-		0xFF, // End Address
-		0x21, // Set Column Address
-		0x00, // Column Start Address
-		0x7F, // Column End Address
-};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,44 +58,7 @@ static void MX_SPI2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void init_display(void) {
-	RST_LOW();
-	HAL_SPI_Transmit(&hspi2, (uint8_t*) &init_display_cmds, 1, HAL_MAX_DELAY);
-	HAL_Delay(10);
-	RST_HIGH();
 
-	DC_LOW();
-	CS_LOW();
-	for (uint8_t j = 0; j < 80; ++j) asm("");
-
-	for (uint16_t i = 0; i < sizeof(init_display_cmds); ++i) {
-		HAL_SPI_Transmit(&hspi2, (uint8_t *) &init_display_cmds[i], 1, HAL_MAX_DELAY);
-		for (uint8_t j = 0; j < 10; ++j) asm("");
-	}
-	CS_HIGH();
-	DC_HIGH();
-}
-void draw_display(void) {
-	DC_LOW();
-	CS_LOW();
-	for (uint8_t j = 0; j < 80; ++j) asm("");
-
-	for (uint16_t i = 0; i < sizeof(init_draw_cmds); ++i) {
-		HAL_SPI_Transmit(&hspi2, (uint8_t *) &init_draw_cmds[i], 1, HAL_MAX_DELAY);
-		for (uint8_t j = 0; j < 10; ++j) asm("");
-	}
-
-	DC_HIGH();
-	for (uint8_t j = 0; j < 80; ++j) asm("");
-	uint8_t pix = 0xFF;
-
-	for (uint8_t i = 0; i < 128; i += 8) {
-		for (uint8_t j = 0; j < 32; ++j) {
-			HAL_SPI_Transmit(&hspi2, (uint8_t *) &pix, 1, HAL_MAX_DELAY);
-			for (uint8_t k = 0; k < 10; ++k) asm("");
-		}
-	}
-}
 /* USER CODE END 0 */
 
 /**
@@ -175,14 +97,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  CS_HIGH();
-  DC_HIGH();
-  RST_HIGH();
+
   init_display();
-  draw_display();
+
   while (1)
   {
-	  HAL_Delay(100);
+	  draw_string("testing", white);
+	  update_display();
+	  HAL_Delay(1000);
+
+	  erase_buffer();
+	  update_display();
+	  HAL_Delay(1000);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

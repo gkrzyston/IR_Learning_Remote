@@ -66,12 +66,7 @@ void Error_Handler(void);
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-#define OLED_DC_Port GPIOA
-#define OLED_DC_Pin GPIO_PIN_0
-#define OLED_RST_Port GPIOA
-#define OLED_RST_Pin GPIO_PIN_1
-#define OLED_CS_Port GPIOA
-#define OLED_CS_Pin GPIO_PIN_4
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

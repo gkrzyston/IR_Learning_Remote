@@ -60,8 +60,8 @@ all: main-build
 main-build: manual_spi.elf secondary-outputs
 
 # Tool invocations
-manual_spi.elf manual_spi.map: $(OBJS) $(USER_OBJS) /home/mcprisk/Projects/EECS373/manual_spi/STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "manual_spi.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/mcprisk/Projects/EECS373/manual_spi/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="manual_spi.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+manual_spi.elf manual_spi.map: $(OBJS) $(USER_OBJS) C:\Users\Matthew\ Priskorn\Documents\Projects\Project\OLED\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "manual_spi.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Matthew Priskorn\Documents\Projects\Project\OLED\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="manual_spi.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
