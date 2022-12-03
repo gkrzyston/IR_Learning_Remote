@@ -1,0 +1,5 @@
+../Core/Src/buttons.c:20:6:enable_button	16	static
+../Core/Src/buttons.c:30:6:disable_button	16	static
+../Core/Src/buttons.c:40:6:enable_all_buttons	16	static
+../Core/Src/buttons.c:47:6:disable_all_buttons	16	static
+../Core/Src/buttons.c:54:6:update_buttons	24	static
