@@ -473,27 +473,38 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   // 50ms Poll Button Timer
   if (htim == &htim5 )
   {
+	  // Save the last button press for flashing
 	  static uint8_t last_pressed = 0;
+	  // Count the number of times the interrupt fires for flashing
 	  static uint8_t i = 0;
+	  // Set high if the button has been released, low while pressed
+	  static uint8_t released = 1;
 
 	  button = poll_buttons();
-	  if (button && button != last_pressed) {
+	  // If a new button is pressed
+	  if (button && released) {
 		  // Transmit IR Code Here!
 		  disable_all_buttons();
 		  enable_button(button);
 		  update_buttons();
 		  last_pressed = button;
-		  i = 0;
+		  released = 0;
+		  i = 0; // Reset counter
 	  } else if (!button && last_pressed) {
+		  // if no button is pressed, flash the last pressed
+		  // button until reaching BUTTON_FLASH_DURATION.
+		  released = 1;
 		  ++i;
-		  if (i > BUTTON_FLASH_DURATION / 50) {
-			  disable_all_buttons();
-			  update_buttons();
-			  i = 0;
-			  last_pressed = 0;
-		  } else if (!(i % 4)) {
+		  if (!(i % 4)) {
+			  // toggle every 200 ms
 			  toggle_button(last_pressed);
 			  update_buttons();
+		  }
+		  else if (i > BUTTON_FLASH_DURATION / 50) {
+			  disable_all_buttons();
+			  update_buttons();
+			  // clear the last pressed button and stop flashing
+			  last_pressed = 0;
 		  }
 	  }
   }
