@@ -33,6 +33,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define TIM5_CR1 0x40000C00
+// how long the buttons flash after being pressed in milliseconds
+#define BUTTON_FLASH_DURATION 1500
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -468,13 +470,32 @@ static void MX_GPIO_Init(void)
 // Callback: timer has rolled over
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  // Check which version of the timer triggered this callback and toggle LED
+  // 50ms Poll Button Timer
   if (htim == &htim5 )
   {
+	  static uint8_t last_pressed = 0;
+	  static uint8_t i = 0;
+
 	  button = poll_buttons();
-	  toggle_button(button);
-	  update_buttons();
-	  while(button != 0 && poll_buttons() == button);
+	  if (button && button != last_pressed) {
+		  // Transmit IR Code Here!
+		  disable_all_buttons();
+		  enable_button(button);
+		  update_buttons();
+		  last_pressed = button;
+		  i = 0;
+	  } else if (!button && last_pressed) {
+		  ++i;
+		  if (i > BUTTON_FLASH_DURATION / 50) {
+			  disable_all_buttons();
+			  update_buttons();
+			  i = 0;
+			  last_pressed = 0;
+		  } else if (!(i % 4)) {
+			  toggle_button(last_pressed);
+			  update_buttons();
+		  }
+	  }
   }
 }
 /* USER CODE END 4 */

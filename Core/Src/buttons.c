@@ -27,6 +27,7 @@ void initialize_buttons(void) {
 
 // Enable a button (1 indexed, left-to-right, top-to-bottom)
 void enable_button(uint8_t button) {
+	if (!button) return;
 	// Set IO Reg to 0 to enable the button
 	if (button == 9) {
 		io_ctrl_2 &= ~(0b1);
@@ -37,6 +38,7 @@ void enable_button(uint8_t button) {
 
 // Disable a button (1 indexed, left-to-right, top-to-bottom)
 void disable_button(uint8_t button) {
+	if (!button) return;
 	// Set IO Reg to 1 to disable the button
 	if (button == 9) {
 		io_ctrl_2 |= 0b1;
@@ -47,6 +49,7 @@ void disable_button(uint8_t button) {
 
 // Toggle a button (1 indexed, left-to-right, top-to-bottom)
 void toggle_button(uint8_t button) {
+	if (!button) return;
 	// Set IO Reg to 1 to disable the button
 	if (button == 9) {
 		io_ctrl_2 ^= 0b1;

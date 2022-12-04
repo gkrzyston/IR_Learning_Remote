@@ -1,10 +1,10 @@
 ../Core/Src/buttons.c:15:6:disable_button_EEPROM_writes	24	static
 ../Core/Src/buttons.c:21:6:initialize_buttons	8	static
 ../Core/Src/buttons.c:29:6:enable_button	16	static
-../Core/Src/buttons.c:39:6:disable_button	16	static
-../Core/Src/buttons.c:49:6:toggle_button	16	static
-../Core/Src/buttons.c:59:6:enable_all_buttons	16	static
-../Core/Src/buttons.c:66:6:disable_all_buttons	16	static
-../Core/Src/buttons.c:73:6:toggle_all_buttons	16	static
-../Core/Src/buttons.c:80:6:update_buttons	24	static
-../Core/Src/buttons.c:87:9:poll_buttons	8	static
+../Core/Src/buttons.c:40:6:disable_button	16	static
+../Core/Src/buttons.c:51:6:toggle_button	16	static
+../Core/Src/buttons.c:62:6:enable_all_buttons	16	static
+../Core/Src/buttons.c:69:6:disable_all_buttons	16	static
+../Core/Src/buttons.c:76:6:toggle_all_buttons	16	static
+../Core/Src/buttons.c:83:6:update_buttons	24	static
+../Core/Src/buttons.c:90:9:poll_buttons	8	static
