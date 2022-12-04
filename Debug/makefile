@@ -60,8 +60,8 @@ all: main-build
 main-build: IRLM.elf secondary-outputs
 
 # Tool invocations
-IRLM.elf IRLM.map: $(OBJS) $(USER_OBJS) C:\Users\Matthew\ Priskorn\Documents\Projects\Eecs_373\Lab\ 4B\IRLM\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "IRLM.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Matthew Priskorn\Documents\Projects\Eecs_373\Lab 4B\IRLM\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="IRLM.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+IRLM.elf IRLM.map: $(OBJS) $(USER_OBJS) /Users/mcprisk/Projects/EECS373/Project/IRLM/STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "IRLM.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/mcprisk/Projects/EECS373/Project/IRLM/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="IRLM.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

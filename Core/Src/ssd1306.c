@@ -1,6 +1,7 @@
 #include "ssd1306.h"
 
 static uint8_t display_buffer[DISPLAY_WIDTH * DISPLAY_HEIGHT / 8];
+static uint8_t i2c_buffer[3] = {IO_CTRL_REG_1, 0xFF, 0x01};
 
 static uint8_t init_display_cmds[] = {
 		0xAE, // Turn Display Off to Sleep Mode
@@ -40,19 +41,47 @@ static uint8_t init_draw_cmds[] = {
 		0x7F, // Column End Address
 };
 
-static uint8_t io_ctrl_1;
-static uint8_t io_ctrl_2;
-
 extern I2C_HandleTypeDef hi2c1;
+
+#define I2C_SEND() HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, i2c_buffer, 3, HAL_MAX_DELAY);
+
+void disable_OLED_EEPROM_writes(void) {
+	uint8_t buf[] = {0xF4, 0x01};
+	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 2, HAL_MAX_DELAY);
+}
+
+void drop_all_CS(void) {
+	i2c_buffer[1] = 0x00;
+	i2c_buffer[2] = 0x00;
+	I2C_SEND();
+	HAL_Delay(1);
+}
+
+void raise_all_CS(void) {
+	i2c_buffer[1] = 0xFF;
+	i2c_buffer[2] = 0x01;
+	I2C_SEND();
+}
+
+// Only one CS can be dropped at a time.
+void drop_CS(uint8_t display) {
+	// Set all high
+	i2c_buffer[1] = 0xFF;
+	i2c_buffer[2] = 0x01;
+	// Set the specified display line low
+	if (display == 9) {
+		i2c_buffer[2] &= ~(0b1);
+	} else if (display <= 8) {
+		i2c_buffer[1] &= ~(0b1 << (display - 1));
+	}
+	I2C_SEND();
+	HAL_Delay(1);
+}
 
 // Initializes the display on startup
 void init_displays(void) {
-	// Raise All Chip Selects High
-	io_ctrl_1 = 0xFF;
-	io_ctrl_2 = 0x01;
-	uint8_t buf[] = {IO_CTRL_REG_1, io_ctrl_1, io_ctrl_2};
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
-
+	disable_OLED_EEPROM_writes();
+	raise_all_CS();
 	DC_HIGH();
 	RST_HIGH();
 	HAL_Delay(10);
@@ -63,13 +92,8 @@ void init_displays(void) {
 
 	DC_LOW();
 	HAL_Delay(1);
-	// Drop All Chip Selects Low
-	io_ctrl_1 = 0x00;
-	io_ctrl_2 = 0x00;
-	buf[1] = io_ctrl_1;
-	buf[2] = io_ctrl_2;
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
 
+	drop_all_CS();
 	for (uint8_t j = 0; j < 80; ++j) asm("");
 
 	// Send commands
@@ -78,12 +102,7 @@ void init_displays(void) {
 		for (uint8_t j = 0; j < 10; ++j) asm("");
 	}
 
-	// Raise All Chip Selects High
-	io_ctrl_1 = 0xFF;
-	io_ctrl_2 = 0x01;
-	buf[1] = io_ctrl_1;
-	buf[2] = io_ctrl_2;
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
+	raise_all_CS();
 
 	// Raise D/C# and clear all displays
 	DC_HIGH();
@@ -97,15 +116,7 @@ void update_display(uint8_t display) {
 	HAL_Delay(1);
 
 	// Drop Chip Select Low
-	io_ctrl_1 = 0xFF;
-	io_ctrl_2 = 0x01;
-	if (display == 9) {
-		io_ctrl_2 &= ~(0b1);
-	} else if (display <= 8) {
-		io_ctrl_1 &= ~(0b1 << (display - 1));
-	}
-	uint8_t buf[] = {IO_CTRL_REG_1, io_ctrl_1, io_ctrl_2};
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
+	drop_CS(display);
 
 	for (uint8_t j = 0; j < 80; ++j) asm("");
 
@@ -121,22 +132,14 @@ void update_display(uint8_t display) {
 		HAL_SPI_Transmit(&hspi2, (uint8_t *) &display_buffer[i], 1, HAL_MAX_DELAY);
 		for (uint8_t k = 0; k < 10; ++k) asm("");
 	}
-	// Raise Chip Selects High
-	io_ctrl_1 = 0xFF;
-	io_ctrl_2 = 0x01;
-	buf[1] = io_ctrl_1;
-	buf[2] = io_ctrl_2;
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
+
+	raise_all_CS();
 }
 
 void update_all_displays() {
 	DC_LOW();
 	HAL_Delay(1);
-	// Drop All Chip Selects Low
-	io_ctrl_1 = 0x00;
-	io_ctrl_2 = 0x00;
-	uint8_t buf[] = {IO_CTRL_REG_1, io_ctrl_1, io_ctrl_2};
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
+	drop_all_CS();
 
 	for (uint8_t j = 0; j < 80; ++j) asm("");
 
@@ -152,12 +155,7 @@ void update_all_displays() {
 		HAL_SPI_Transmit(&hspi2, (uint8_t *) &display_buffer[i], 1, HAL_MAX_DELAY);
 		for (uint8_t k = 0; k < 10; ++k) asm("");
 	}
-	// Raise All Chip Selects High
-	io_ctrl_1 = 0xFF;
-	io_ctrl_2 = 0x01;
-	buf[1] = io_ctrl_1;
-	buf[2] = io_ctrl_2;
-	HAL_I2C_Master_Transmit(&hi2c1, PX2_ADDR, buf, 3, HAL_MAX_DELAY);
+	raise_all_CS();
 }
 
 // flips all bits in the buffer

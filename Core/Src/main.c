@@ -100,7 +100,8 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -110,10 +111,17 @@ int main(void)
   {
 	  draw_string("testing", white);
 	  update_display(3);
+	  erase_buffer();
+	  draw_string("please", white);
+	  update_display(5);
+	  erase_buffer();
+	  draw_string("work", white);
+	  update_display(6);
 	  HAL_Delay(1000);
 
 	  erase_buffer();
 	  update_all_displays();
+	  //update_all_displays();
 	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
@@ -220,12 +228,12 @@ static void MX_SPI2_Init(void)
   /* SPI2 parameter configuration*/
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_MASTER;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi2.Init.Direction = SPI_DIRECTION_1LINE;
   hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -260,7 +268,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 2047;
+  htim2.Init.Prescaler = 1023;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

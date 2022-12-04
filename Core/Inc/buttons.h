@@ -44,6 +44,9 @@
 #define R1_READ() HAL_GPIO_ReadPin(SW_R1_Port, SW_R1_Pin)
 #define R0_READ() HAL_GPIO_ReadPin(SW_R0_Port, SW_R0_Pin)
 
+// Initialize the buttons
+void initialize_buttons(void);
+
 // Enable a button (1 indexed, left-to-right, top-to-bottom)
 void enable_button(uint8_t button);
 
@@ -54,19 +57,19 @@ void disable_button(uint8_t button);
 void toggle_button(uint8_t button);
 
 // Enable all of the buttons
-void enable_all_buttons();
+void enable_all_buttons(void);
 
 // Disable all of the buttons
-void disable_all_buttons();
+void disable_all_buttons(void);
 
 // Toggle all of the buttons
-void toggle_all_buttons();
+void toggle_all_buttons(void);
 
 // Write the updated button configuration to the remote
-void update_buttons();
+void update_buttons(void);
 
 // Poll buttons, returns the first pressed button
 // or zero if no button is pressed
-uint8_t poll_buttons();
+uint8_t poll_buttons(void);
 
 #endif /* INC_BUTTONS_H_ */
