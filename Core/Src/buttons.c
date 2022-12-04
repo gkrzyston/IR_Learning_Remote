@@ -12,6 +12,19 @@ extern I2C_HandleTypeDef hi2c1;
 static uint8_t io_ctrl_1 = 0xFF;
 static uint8_t io_ctrl_2 = 0x01;
 
+void disable_button_EEPROM_writes(void) {
+	uint8_t buf[] = {0xF4, 0x01};
+	HAL_I2C_Master_Transmit(&hi2c1, PX1_ADDR, buf, 2, HAL_MAX_DELAY);
+}
+
+// Initialize Buttons
+void initialize_buttons(void) {
+	disable_button_EEPROM_writes();
+	enable_all_buttons();
+	update_buttons();
+	HAL_Delay(1);
+}
+
 // Enable a button (1 indexed, left-to-right, top-to-bottom)
 void enable_button(uint8_t button) {
 	// Set IO Reg to 0 to enable the button
@@ -43,35 +56,35 @@ void toggle_button(uint8_t button) {
 }
 
 // Enable all of the buttons
-void enable_all_buttons() {
+void enable_all_buttons(void) {
 	for (uint8_t i = 1; i <= 9; ++i) {
 		enable_button(i);
 	}
 }
 
 // Disable all of the buttons
-void disable_all_buttons() {
+void disable_all_buttons(void) {
 	for (uint8_t i = 1; i <= 9; ++i) {
 		disable_button(i);
 	}
 }
 
 // Toggle all buttons
-void toggle_all_buttons() {
+void toggle_all_buttons(void) {
 	for (uint8_t i = 1; i <= 9; ++i) {
 		toggle_button(i);
 	}
 }
 
 // Write the updated button configuration to the remote
-void update_buttons() {
+void update_buttons(void) {
 	uint8_t buf[] = {IO_CTRL_REG_1, io_ctrl_1, io_ctrl_2};
 	HAL_I2C_Master_Transmit(&hi2c1, PX1_ADDR, buf, 3, HAL_MAX_DELAY);
 }
 
 // Poll buttons, returns the first pressed button
 // or zero if no button is pressed
-uint8_t poll_buttons() {
+uint8_t poll_buttons(void) {
 	C1_HIGH();
 	C2_HIGH();
 	C0_LOW();
