@@ -21,8 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ssd1306.h"
 #include "buttons.h"
+#include "controller.h"
+#include "menu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,15 +33,13 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TIM5_CR1 0x40000C00
 // how long the buttons flash after being pressed in milliseconds
 #define BUTTON_FLASH_DURATION 1500
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define STOP_BUTTON_POLL() *(uint32_t*)TIM5_CR1 &= ~(0b1)
-#define START_BUTTON_POLL() *(uint32_t*)TIM5_CR1 |= 0b1
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -55,6 +54,10 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 uint8_t button = 0;
+Controller controller;
+unsigned char UART1_rxBuffer[8192] = {'\0'};
+uint8_t sync = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,10 +111,12 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
+  init_default_controller(&controller);
+  // init_xbee_communication();
   init_displays();
   HAL_TIM_Base_Start_IT(&htim5);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200); // Adjust LED Brightness
   initialize_buttons();
   disable_all_buttons();
   update_buttons();
@@ -119,26 +124,26 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+  display_menu(main_menu, 1);
   while (1)
   {
-	  STOP_BUTTON_POLL();
-	  draw_string("testing", white);
-	  update_display(3);
-	  erase_buffer();
-	  draw_string("please", white);
-	  update_display(5);
-	  erase_buffer();
-	  draw_string("work", white);
-	  update_display(6);
-	  START_BUTTON_POLL();
-	  HAL_Delay(1000);
-
-	  STOP_BUTTON_POLL();
-	  erase_buffer();
-	  update_all_displays();
-	  START_BUTTON_POLL();
-	  HAL_Delay(1000);
+	  if (button) {
+		  button_pressed(button);
+		  button = 0;
+	  }
+//	  draw_string("testing", white);
+//	  update_display(3);
+//	  erase_buffer();
+//	  draw_string("please", white);
+//	  update_display(5);
+//	  erase_buffer();
+//	  draw_string("work", white);
+//	  update_display(6);
+//	  HAL_Delay(1000);
+//
+//	  erase_buffer();
+//	  update_all_displays();
+//	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -470,45 +475,84 @@ static void MX_GPIO_Init(void)
 // Callback: timer has rolled over
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  // 50ms Poll Button Timer
-  if (htim == &htim5 )
-  {
-	  // Save the last button press for flashing
-	  static uint8_t last_pressed = 0;
-	  // Count the number of times the interrupt fires for flashing
-	  static uint8_t i = 0;
-	  // Set high if the button has been released, low while pressed
-	  static uint8_t released = 1;
+	// 50ms Poll Button Timer
+	if (htim == &htim5 )
+	{
+		// Save the last button press for flashing
+		static uint8_t last_pressed = 0;
+		// Count the number of times the interrupt fires for flashing
+		static uint8_t i = 0;
+		// Set high if the button has been released, low while pressed
+		static uint8_t released = 1;
 
-	  button = poll_buttons();
-	  // If a new button is pressed
-	  if (button && released) {
-		  // Transmit IR Code Here!
-		  disable_all_buttons();
-		  enable_button(button);
-		  update_buttons();
-		  last_pressed = button;
-		  released = 0;
-		  i = 0; // Reset counter
-	  } else if (!button && last_pressed) {
-		  // if no button is pressed, flash the last pressed
-		  // button until reaching BUTTON_FLASH_DURATION.
-		  released = 1;
-		  ++i;
-		  if (!(i % 4)) {
-			  // toggle every 200 ms
-			  toggle_button(last_pressed);
-			  update_buttons();
-		  }
-		  else if (i > BUTTON_FLASH_DURATION / 50) {
-			  disable_all_buttons();
-			  update_buttons();
-			  // clear the last pressed button and stop flashing
-			  last_pressed = 0;
-		  }
-	  }
-  }
+		button = poll_buttons();
+		// If a new button is pressed
+		if (button && released) {
+			// Turn on Button Light
+			disable_all_buttons();
+			enable_button(button);
+			update_buttons();
+			// Handle Button Press
+			// MUST BE RUN OUTSIDE OF INTERRUPT WITH ZERO PRIORITY
+			//button_pressed(button);
+
+			last_pressed = button;
+			released = 0;
+			i = 0; // Reset counter
+		} else if (!button && last_pressed) {
+			// if no button is pressed, flash the last pressed
+			// button until reaching BUTTON_FLASH_DURATION.
+			released = 1;
+			++i;
+			if (!(i % 4)) {
+				// toggle every 200 ms
+				toggle_button(last_pressed);
+				update_buttons();
+			}
+			else if (i > BUTTON_FLASH_DURATION / 50) {
+				disable_all_buttons();
+				update_buttons();
+				// clear the last pressed button and stop flashing
+				last_pressed = 0;
+			}
+		}
+	}
 }
+// Callback, recieved complete set of data from PC
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	// Ensure this only runs for UART 1
+	if (huart != &huart1) return;
+
+	// Sync with the PC
+    if (!sync) {
+    	sync = 1;
+    	HAL_UART_Transmit(huart, UART1_rxBuffer, 1, 100);
+    	HAL_UART_Receive_IT(huart, UART1_rxBuffer, 4);
+    	return;
+    }
+
+    UART1_rxBuffer[5] = '\0';
+
+    if (!strcmp((char*)UART1_rxBuffer,"quit")) {
+    	sync = 0;
+    	HAL_UART_Receive_IT(&huart1, UART1_rxBuffer, 1);
+    	return;
+    } else if (!strcmp((char*)UART1_rxBuffer,"econ")) {
+    	// If the host wants to export, client needs to import
+    	//import_configuration();
+    } else if (!strcmp((char*)UART1_rxBuffer,"icon")) {
+    	// If the host wants to import, client needs to export
+    	export_configuration(&controller);
+    }
+
+    HAL_UART_Receive_IT(huart, UART1_rxBuffer, 4);
+}
+
+void init_xbee_communication() {
+	HAL_UART_Receive_IT(&huart1, UART1_rxBuffer, 1);
+}
+
 /* USER CODE END 4 */
 
 /**

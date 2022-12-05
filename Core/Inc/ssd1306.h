@@ -29,6 +29,10 @@ typedef enum Colors{black = 0x00, white = 0x01} Color;
 #define DC_LOW() HAL_GPIO_WritePin(OLED_DC_Port, OLED_DC_Pin, GPIO_PIN_RESET)
 #define DC_HIGH() HAL_GPIO_WritePin(OLED_DC_Port, OLED_DC_Pin, GPIO_PIN_SET)
 
+#define TIM5_CR1 0x40000C00
+#define STOP_BUTTON_POLL() *(uint32_t*)TIM5_CR1 &= ~(0b1)
+#define START_BUTTON_POLL() *(uint32_t*)TIM5_CR1 |= 0b1
+
 // I2C Port Expander Addresses
 #define PX2_ADDR      0xA2
 #define IO_CTRL_REG_1 0xF2

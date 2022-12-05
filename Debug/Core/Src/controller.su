@@ -1,0 +1,15 @@
+../Core/Src/controller.c:16:6:init_default_controller	32	static
+../Core/Src/controller.c:51:6:display_settings	8	static
+../Core/Src/controller.c:77:6:print_number	24	static
+../Core/Src/controller.c:84:6:print_device	24	static
+../Core/Src/controller.c:89:6:print_devices	24	static
+../Core/Src/controller.c:95:6:print_command	32	static
+../Core/Src/controller.c:107:6:print_button_commands	24	static
+../Core/Src/controller.c:113:6:print_touch_commands	24	static
+../Core/Src/controller.c:119:6:print_commands	16	static
+../Core/Src/controller.c:124:6:add_device	40	static
+../Core/Src/controller.c:136:6:delete_device	24	static
+../Core/Src/controller.c:154:6:export_device	16	static
+../Core/Src/controller.c:176:6:rename_device	24	static
+../Core/Src/controller.c:179:6:swap_device	808	static
+../Core/Src/controller.c:207:6:export_configuration	24	static

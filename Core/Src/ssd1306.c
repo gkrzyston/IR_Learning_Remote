@@ -80,6 +80,7 @@ void drop_CS(uint8_t display) {
 
 // Initializes the display on startup
 void init_displays(void) {
+	STOP_BUTTON_POLL();
 	disable_OLED_EEPROM_writes();
 	raise_all_CS();
 	DC_HIGH();
@@ -106,12 +107,14 @@ void init_displays(void) {
 
 	// Raise D/C# and clear all displays
 	DC_HIGH();
+	START_BUTTON_POLL();
 	erase_buffer();
 	update_all_displays();
 }
 
 // refreshes a display (1 indexed, left-to-right, top-to-bottom)
 void update_display(uint8_t display) {
+	STOP_BUTTON_POLL();
 	DC_LOW();
 	HAL_Delay(1);
 
@@ -134,9 +137,11 @@ void update_display(uint8_t display) {
 	}
 
 	raise_all_CS();
+	START_BUTTON_POLL();
 }
 
 void update_all_displays() {
+	STOP_BUTTON_POLL();
 	DC_LOW();
 	HAL_Delay(1);
 	drop_all_CS();
@@ -156,6 +161,7 @@ void update_all_displays() {
 		for (uint8_t k = 0; k < 10; ++k) asm("");
 	}
 	raise_all_CS();
+	START_BUTTON_POLL();
 }
 
 // flips all bits in the buffer
