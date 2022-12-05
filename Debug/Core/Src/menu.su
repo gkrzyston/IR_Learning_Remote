@@ -1,2 +1,2 @@
-../Core/Src/menu.c:21:6:display_menu	24	static
-../Core/Src/menu.c:52:6:button_pressed	16	static
+../Core/Src/menu.c:23:6:display_menu	32	static
+../Core/Src/menu.c:67:6:button_pressed	24	static

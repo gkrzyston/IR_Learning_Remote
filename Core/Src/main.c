@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "buttons.h"
 #include "controller.h"
+#include "ssd1306.h"
 #include "menu.h"
 /* USER CODE END Includes */
 
@@ -34,7 +35,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 // how long the buttons flash after being pressed in milliseconds
-#define BUTTON_FLASH_DURATION 1500
+#define BUTTON_FLASH_DURATION 600
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,6 +54,7 @@ TIM_HandleTypeDef htim5;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+Menu current_menu;
 uint8_t button = 0;
 Controller controller;
 unsigned char UART1_rxBuffer[8192] = {'\0'};
@@ -112,24 +114,25 @@ int main(void)
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   init_default_controller(&controller);
-  // init_xbee_communication();
   init_displays();
   HAL_TIM_Base_Start_IT(&htim5);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200); // Adjust LED Brightness
   initialize_buttons();
-  disable_all_buttons();
-  update_buttons();
+  //disable_all_buttons();
+  //update_buttons();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  display_menu(main_menu, 1);
+  display_menu(main_menu, 1, 0);
+  uint8_t pressed_button = 0;
   while (1)
   {
 	  if (button) {
-		  button_pressed(button);
-		  button = 0;
+		  pressed_button = button;
+		  while(button);
+		  button_pressed(pressed_button);
 	  }
 //	  draw_string("testing", white);
 //	  update_display(3);
@@ -489,12 +492,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		// If a new button is pressed
 		if (button && released) {
 			// Turn on Button Light
-			disable_all_buttons();
-			enable_button(button);
+			if (current_menu != settings_menu) enable_all_buttons();
+			disable_button(button);
+			// Invert display
 			update_buttons();
-			// Handle Button Press
-			// MUST BE RUN OUTSIDE OF INTERRUPT WITH ZERO PRIORITY
-			//button_pressed(button);
 
 			last_pressed = button;
 			released = 0;
@@ -506,12 +507,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			++i;
 			if (!(i % 4)) {
 				// toggle every 200 ms
-				toggle_button(last_pressed);
+				if ((current_menu != settings_menu) || (last_pressed == 1 || last_pressed == 2 || last_pressed == 9))
+					toggle_button(last_pressed);
+				// invert display
 				update_buttons();
 			}
 			else if (i > BUTTON_FLASH_DURATION / 50) {
-				disable_all_buttons();
+				if (current_menu != settings_menu || last_pressed == 1 || last_pressed == 2 || last_pressed == 9)
+					enable_button(last_pressed);
+				else disable_button(last_pressed);
 				update_buttons();
+				// set display to not inverted
 				// clear the last pressed button and stop flashing
 				last_pressed = 0;
 			}
@@ -547,10 +553,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
 
     HAL_UART_Receive_IT(huart, UART1_rxBuffer, 4);
-}
-
-void init_xbee_communication() {
-	HAL_UART_Receive_IT(&huart1, UART1_rxBuffer, 1);
 }
 
 /* USER CODE END 4 */

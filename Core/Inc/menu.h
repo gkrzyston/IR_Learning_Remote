@@ -11,8 +11,9 @@
 typedef enum Menus{main_menu, settings_menu, device_menu} Menu;
 
 #define MAIN_MENU_PAGE_COUNT 3
+#define DEVICE_MENU_PAGE_COUNT 4
 
-void display_menu(Menu menu, uint8_t page);
+void display_menu(Menu menu, uint8_t page, uint8_t device);
 void button_pressed(uint8_t button);
 
 #endif /* INC_MENU_H_ */

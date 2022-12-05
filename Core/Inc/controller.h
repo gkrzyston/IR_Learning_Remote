@@ -41,7 +41,7 @@ typedef struct Devices {
 	 * The devices name is printed at the top of the touchscreen
 	 * and is also used to identify devices in the CLI
 	*/
-	char name[32];
+	char name[11];
 	/*
 	 * The number of buttons associated with this device
 	*/
@@ -50,24 +50,24 @@ typedef struct Devices {
 } Device;
 
 typedef struct Controllers {
-	Device devices[16];
+	Device devices[18];
 	uint8_t num_devices;
 } Controller;
 
-void init_default_controller(Controller* controller);
-void display_settings();
-void display_device_commands(Controller * controller, uint8_t device);
+void init_default_controller();
+void init_xbee_communication();
+void display_device_commands(uint8_t device);
 
-void print_device(uint8_t device, Controller* controller);
-void print_devices(Controller* controller);
-void print_command(uint8_t device, uint8_t command, Controller* controller);
-void print_commands(uint8_t device, Controller* controller);
+void print_device(uint8_t device);
+void print_devices();
+void print_command(uint8_t device, uint8_t command);
+void print_commands(uint8_t device);
 
-void swap_device(uint8_t a, uint8_t b, Controller* controller);
-void rename_device(char* new_name, uint8_t device, Controller* controller);
-void add_device(Controller* controller);
-void delete_device(uint8_t device, Controller* controller);
+void swap_device(uint8_t a, uint8_t b);
+void rename_device(char* new_name, uint8_t device);
+void add_device();
+void delete_device(uint8_t device);
 
-void export_configuration(Controller* controller);
+void export_configuration();
 
 #endif /* SRC_CONTROLLER_H_ */
