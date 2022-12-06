@@ -15,28 +15,19 @@
 #include "ssd1306.h"
 
 typedef struct Commands {
-	uint8_t UART_Data;
-	/*
-	 * The full description is used in the CLI and also
-	 * displayed on the touchscreen.
-	*/
-	char full_desc[16];
+	uint8_t UART_Data[80];
 	/*
 	 * The shortened description is used on the button array displays.
 	*/
-	char desc[10];
+	char desc[11];
 } Command;
 
 typedef struct Devices {
 	/*
 	 * Commands contain the UART_Data to be sent to devices
-	 * Command 0 is the power toggle
-	 * Commands 1-9 are accessed on the button array
-	 * Commands 10-15 are on the first page of the touchscreen
-	 * Commands 16-21 are on the second page
-	 * Commands 22-27 on the third page
+	 * And are identified by their number and name
 	*/
-	Command commands[28];
+	Command commands[24];
 	/*
 	 * The devices name is printed at the top of the touchscreen
 	 * and is also used to identify devices in the CLI
@@ -46,7 +37,6 @@ typedef struct Devices {
 	 * The number of buttons associated with this device
 	*/
 	uint8_t num_button_commands;
-	uint8_t num_touch_commands;
 } Device;
 
 typedef struct Controllers {
