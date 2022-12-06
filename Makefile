@@ -1,5 +1,5 @@
 CXX = gcc
-CXXFLAGS = -std=c11 -Wconversion -Wall -Werror -Wextra -pedantic -D _DEFAULT_SOURCE
+CXXFLAGS = -std=c11 -Wconversion -Wall -Wextra -pedantic -D _DEFAULT_SOURCE
 SOURCES = $(wildcard *.c)
 EXECUTABLE = irlm
 

@@ -28,15 +28,37 @@ int main()
 
         /* Act based on user command */
         if (!strcasecmp(command, "quit")) {
-            issue_xbee_command(QUIT/* , 0, NULL */);
+            issue_xbee_command(QUIT, 0, NULL);
             return 0;
+        } else if (!strcasecmp(command, "edit")) {
+            if (!strcasecmp(argv[0], "device")) {
+                if (argc != 2) {
+                    print_usage();
+                    continue;
+                }
+                issue_xbee_command(EDIT_DEVICE, 1, argv + 1);
+            } else if (!strcasecmp(argv[0], "command")) {
+                if (argc != 3) {
+                    print_usage();
+                    continue;
+                }
+                issue_xbee_command(EDIT_COMMAND, 2, argv + 1);
+            }
+        } else if (!strcasecmp(command, "export")) {
+            if (!argc) {
+                print_usage();
+                continue;
+            }
+            if (!strcasecmp(argv[0], "configuration")) {
+                issue_xbee_command(EXPORT_CONFIGURATION, 0, NULL);
+            }
         } else if (!strcasecmp(command, "import")) {
             if (!argc) { 
                 print_usage(); 
                 continue; 
             }
             if (!strcasecmp(argv[0], "configuration")) {
-                issue_xbee_command(IMPORT_CONFIGURATION/* , argc - 1, argv + 1 */);
+                issue_xbee_command(IMPORT_CONFIGURATION, 0, NULL);
             }
         } else {
             print_usage();
@@ -58,25 +80,25 @@ void print_usage() {
     printf("---------------------------------------------------------------------------------\n");
     printf(" export    [option]         [suboption(s)]                                       \n");
     printf("           configuration    save name                                            \n");
-    printf("           device           device number     save name                          \n");
-    printf("           command          device number     command number    save name        \n");
+    // printf("           device           device number     save name                          \n");
+    // printf("           command          device number     command number    save name        \n");
     printf("---------------------------------------------------------------------------------\n\n");
     printf("     to IMPORT the remote's current settings, saving them to this computer:      \n");
     printf("---------------------------------------------------------------------------------\n");
     printf(" import    [option]         [suboption(s)]                                       \n");
     printf("           configuration    save name                                            \n");
-    printf("           device           device number     save name                          \n");
-    printf("           command          device number     command number    save name        \n");
-    printf("---------------------------------------------------------------------------------\n\n");
-    printf("                        to view or modify saved settings:                        \n");
-    printf("---------------------------------------------------------------------------------\n");
-    printf(" saved     [option]         [suboption(s)]                                       \n");
-    printf("           view             configuration     saved configuration name           \n");
-    printf("                            device            saved device name                  \n");
-    printf("                            command           saved command name                 \n");
-    printf("           edit             configuration     saved configuration name           \n");
-    printf("                            device            saved device name                  \n");
-    printf("                            command           saved command name                 \n");
+    // printf("           device           device number     save name                          \n");
+    // printf("           command          device number     command number    save name        \n");
+    // printf("---------------------------------------------------------------------------------\n\n");
+    // printf("                        to view or modify saved settings:                        \n");
+    // printf("---------------------------------------------------------------------------------\n");
+    // printf(" saved     [option]         [suboption(s)]                                       \n");
+    // printf("           view             configuration     saved configuration name           \n");
+    // printf("                            device            saved device name                  \n");
+    // printf("                            command           saved command name                 \n");
+    // printf("           edit             configuration     saved configuration name           \n");
+    // printf("                            device            saved device name                  \n");
+    // printf("                            command           saved command name                 \n");
     printf("---------------------------------------------------------------------------------\n\n");
     printf("                     to VIEW the remote's current settings:                      \n");
     printf("---------------------------------------------------------------------------------\n");
