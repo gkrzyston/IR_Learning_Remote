@@ -1,12 +1,16 @@
 #ifndef TRANSMIT 
 #define TRANSMIT
 #include "main.h"
+#include "stm32f4xx_hal.h"
+#define dataL 66
+extern uint16_t data[];
+extern TIM_HandleTypeDef htim3;
 void Toggle(int on){
 	if(!on){
-		HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_1);
+		HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_2);
 	}
 	else{
-		HAL_TIM_PWM_Stop(&htim3,TIM_CHANNEL_1);
+		HAL_TIM_PWM_Stop(&htim3,TIM_CHANNEL_2);
 	}
 }
 void Delay(uint16_t delay){
