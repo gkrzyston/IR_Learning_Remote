@@ -1,0 +1,15 @@
+../Core/Src/controller.c:17:6:init_default_controller	24	static
+../Core/Src/controller.c:66:6:init_xbee_communication	8	static
+../Core/Src/controller.c:70:6:print_number	24	static
+../Core/Src/controller.c:77:6:print_device	24	static
+../Core/Src/controller.c:82:6:print_devices	16	static
+../Core/Src/controller.c:88:6:print_command	32	static
+../Core/Src/controller.c:100:6:print_button_commands	24	static
+../Core/Src/controller.c:106:6:print_touch_commands	24	static
+../Core/Src/controller.c:112:6:print_commands	16	static
+../Core/Src/controller.c:117:6:add_device	32	static
+../Core/Src/controller.c:129:6:delete_device	24	static
+../Core/Src/controller.c:147:6:export_device	16	static
+../Core/Src/controller.c:169:6:rename_device	16	static
+../Core/Src/controller.c:172:6:swap_device	792	static
+../Core/Src/controller.c:200:6:export_configuration	16	static
