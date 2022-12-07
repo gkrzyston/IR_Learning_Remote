@@ -53,7 +53,7 @@ void print_devices() {
 }
 
 void print_command(uint8_t device, uint8_t command) {
-	char data_buffer[3];
+	char data_buffer[81];
 	itoa(controller.devices[device].commands[command].Data, data_buffer, 16);
 
 	HAL_UART_Transmit(&huart1, (uint8_t*)(controller.devices[device].commands[command].desc),strlen(controller.devices[device].commands[command].desc),0xFFFF);
@@ -68,23 +68,23 @@ void print_commands(uint8_t device) {
 	}
 }
 
-void add_device() {
-	char buf[3];
-	char msg[20];
-	itoa(controller.num_devices,buf,10);
-	strcpy(msg, "Device ");
-	strncat(msg, buf, strlen(buf));
-	strcpy(controller.devices[controller.num_devices].name,msg);
-	controller.devices[controller.num_devices].num_button_commands = 0;
-	++(controller.num_devices);
-}
-
-void delete_device(uint8_t device) {
-	--(controller.num_devices);
-	for (uint8_t i = device; i < controller.num_devices; ++i) {
-		swap_device(i, i+1);
-	}
-}
+//void add_device() {
+//	char buf[3];
+//	char msg[20];
+//	itoa(controller.num_devices,buf,10);
+//	strcpy(msg, "Device ");
+//	strncat(msg, buf, strlen(buf));
+//	strcpy(controller.devices[controller.num_devices].name,msg);
+//	controller.devices[controller.num_devices].num_button_commands = 0;
+//	++(controller.num_devices);
+//}
+//
+//void delete_device(uint8_t device) {
+//	--(controller.num_devices);
+//	for (uint8_t i = device; i < controller.num_devices; ++i) {
+//		swap_device(i, i+1);
+//	}
+//}
 
 /*
  * Device Export Format:
@@ -97,12 +97,10 @@ void delete_device(uint8_t device) {
  * Command #1 Long Name, Short Name, Data
  * Command #2 Long Name, Short Name, Data
  */
-void export_device(uint8_t device) {
-	print_device(device);
-
-	print_number(controller.devices[device].num_button_commands);
-	print_commands(device);
-}
+//void export_device(uint8_t device) {
+//	print_device(device);
+//	print_commands(device);
+//}
 /*
  * Device Import Format:
  * Device Name
@@ -114,25 +112,43 @@ void export_device(uint8_t device) {
  * Command #1 Long Name, Short Name, Data
  * Command #2 Long Name, Short Name, Data
  */
-void import_device();
+void import_device(uint8_t device) {
+	char name_buf[11];
+
+	for (uint8_t i = 0; i < 10; ++i) {
+		name_buf[i] = UART1_rxBuffer[i];
+	}
+	name_buf[10] = '\0';
+	rename_device(name_buf, device);
+	for (uint8_t i = 0; i < 24; ++i) {
+		for (uint8_t j = 0; j < 10; ++j) {
+			name_buf[j] = UART1_rxBuffer[11 + 92*i + j];
+		}
+		name_buf[10] = '\0';
+		rename_command(name_buf, device, i);
+		for (uint8_t j = 0; j < 80; ++j) {
+			controller.devices[device].commands[i].Data[j] = UART1_rxBuffer[22 + 92*i + j];
+		}
+	}
+}
 
 void rename_device(char* new_name, uint8_t device) {
 	strcpy(controller.devices[device].name, new_name);
 }
-void swap_device(uint8_t a, uint8_t b) {
-	Device tmp = controller.devices[a];
-	controller.devices[a] = controller.devices[b];
-	controller.devices[b] = tmp;
-}
+//void swap_device(uint8_t a, uint8_t b) {
+//	Device tmp = controller.devices[a];
+//	controller.devices[a] = controller.devices[b];
+//	controller.devices[b] = tmp;
+//}
 
-void add_command();
-void set_command();
-void delete_command();
+//void add_command();
+//void set_command();
+//void delete_command();
 void rename_command(char* new_name, uint8_t device, uint8_t command) {
 	strcpy(controller.devices[device].commands[command].desc, new_name);
 }
-void swap_command();
-void copy_command();
+//void swap_command();
+//void copy_command();
 
 /*
  * Configuration Export Format:
@@ -146,23 +162,7 @@ void copy_command();
  * ...
 */
 void export_configuration() {
-	print_number(controller.num_devices);
-
 	for (uint8_t i = 0; i < controller.num_devices; ++i) {
-		export_device(i);
-		HAL_UART_Transmit(&huart1, (uint8_t*)deliminator, 1, 0xFFFF);
+		//export_device(i);
 	}
 }
-/*
- * Configuration Export Format:
- * # of Devices
- * Device #1 Name
- * Number of Button Commands
- * Command #1 Name, Data
- * Command #2 Name, Data
- * (blank line)
- * Device #2 Name
- * ...
-*/
-void import_configuration();
-

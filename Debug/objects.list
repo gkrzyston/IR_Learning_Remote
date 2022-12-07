@@ -1,3 +1,4 @@
+"./Core/Src/IrTransmit.o"
 "./Core/Src/buttons.o"
 "./Core/Src/controller.o"
 "./Core/Src/main.o"

@@ -8,7 +8,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../Inc/menu.h"
+#include "menu.h"
+#include "IrTransmit.h"
 #include "controller.h"
 #include "buttons.h"
 #include "ssd1306.h"
@@ -21,10 +22,11 @@ extern TIM_HandleTypeDef htim2;
 extern uint8_t received;
 extern uint32_t dataLen;
 extern uint8_t timeoutoff;
-extern void GlobalTransmit(uint16_t [dataLen]);
 
 // Store Menu Commands
 static char menu_commands[9][11];
+
+void Learn_command(uint8_t com,uint8_t device);
 
 void display_menu(Menu menu, uint8_t page, uint8_t device) {
 	if (!page) return;
@@ -153,7 +155,7 @@ void button_pressed(uint8_t button) {
 			for (uint8_t i = 1; i <= 7; ++i) {
 				disable_button(i);
 			}	
-			update_buttons;
+			update_buttons();
 			// Inform User that they are in PC mode somehow
 			break;
 		case 2:

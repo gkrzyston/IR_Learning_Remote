@@ -55,8 +55,11 @@ void print_commands(uint8_t device);
 
 void swap_device(uint8_t a, uint8_t b);
 void rename_device(char* new_name, uint8_t device);
-void add_device();
-void delete_device(uint8_t device);
+void import_device(uint8_t device);
+//void add_device();
+//void delete_device(uint8_t device);
+
+void rename_command(char* new_name, uint8_t device, uint8_t command);
 
 void export_configuration();
 

@@ -15,7 +15,7 @@
 
 #define X 0x28
 extern I2C_HandleTypeDef hi2c3;
-#define timeout 3
+#define timeout 30
 #define OFFthreshold 1300
 #define ONthreshold 701
 

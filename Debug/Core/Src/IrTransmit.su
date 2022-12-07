@@ -1,0 +1,4 @@
+../Core/Src/IrTransmit.c:10:6:Toggle	16	static
+../Core/Src/IrTransmit.c:18:6:Delay	16	static
+../Core/Src/IrTransmit.c:32:6:GlobalTransmit	16	static
+../Core/Src/IrTransmit.c:41:6:DeviceTransmit	24	static
