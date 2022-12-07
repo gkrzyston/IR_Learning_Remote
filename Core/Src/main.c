@@ -76,6 +76,8 @@ uint32_t awake = 1;
 uint8_t pollnow = 0;
 uint8_t wakeup = 0;
 uint8_t timeoutoff = 0;
+
+uint8_t settings = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -160,6 +162,14 @@ int main(void)
 
     while (1)
     {   
+    	if (settings) {
+    		display_menu(settings_menu, 1, 0);
+    		for (uint8_t i = 1; i <= 4; ++i) {
+    			enable_button(i);
+    		}
+    		update_buttons();
+    		settings = 0;
+    	}
         if(!awake && button){
             resetCounter();
         }
@@ -822,7 +832,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         if (button && released)
         {
             // Turn on Button Light
-            if (current_menu != settings_menu)
+            if (current_menu != settings_menu && current_menu != xbee_menu)
                 enable_all_buttons();
             disable_button(button);
             // Invert display
@@ -879,7 +889,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     	return;
     }
 
-    if (argument == noarg) UART1_rxBuffer[5] = '\0';
+    if (argument == noarg) UART1_rxBuffer[4] = '\0';
 
     switch(argument) {
     case noarg:
@@ -934,7 +944,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     	for (uint8_t i = 0; i < 2; ++i) {
     		dev_buf[i] = UART1_rxBuffer[i];
     	}
-    	dev_buf[2] = '/0';
+    	dev_buf[2] = 0;
     	device = atoi(dev_buf) - 1;
     	for (uint8_t i = 0; i < 10; ++i) {
     		new_name[i] = UART1_rxBuffer[i+2];
@@ -967,11 +977,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     default:
     	argument = noarg;
+    	break;
     }
 
-
-
-    if (!argument) HAL_UART_Receive_IT(huart, &UART1_rxBuffer, 4);
+    if (argument == noarg) {
+    	sync = 0;
+    	UART1_rxBuffer[0] = '\0';
+    	settings = 1;
+    }
 }
 
 /* USER CODE END 4 */

@@ -230,6 +230,15 @@ void draw_string(char* str, Color color) {
 	size_t len = strlen(str);
     if (len <= 0 || len > 10) return;
 
+    for (uint8_t i = 0; i < len; ++i) {
+    	if (str[i] == '\n') {
+    		str[i] = '\0';
+    		break;
+    	}
+    }
+
+    len = strlen(str);
+
     uint8_t x = DISPLAY_WIDTH/2;
     if (len%2) {
         x -= FONT_WIDTH/2;

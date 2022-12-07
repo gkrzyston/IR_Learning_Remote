@@ -34,6 +34,8 @@ void display_menu(Menu menu, uint8_t page, uint8_t device) {
 	current_page = page;
 	switch(menu) {
 	case main_menu:
+		enable_all_buttons();
+		update_buttons();
 		if (page > MAIN_MENU_PAGE_COUNT) return;
 		//strcpy(cmd_buf, "Device ");
 		//char device_number[3];
@@ -49,7 +51,12 @@ void display_menu(Menu menu, uint8_t page, uint8_t device) {
 		strcpy(menu_commands[8], "Next Page");
 		break;
 	case settings_menu:
-		strcpy(menu_commands[0], "PC Connect");
+		enable_all_buttons();
+		for (uint8_t i = 5; i <= 8; ++i) {
+			disable_button(i);
+		}
+		update_buttons();
+		strcpy(menu_commands[0], "PC Command");
 		strcpy(menu_commands[1], "Learn Cmd");
 		strcpy(menu_commands[2],"TimeoutOn");
 		strcpy(menu_commands[3],"TimeoutOff");	
@@ -101,14 +108,12 @@ void display_menu(Menu menu, uint8_t page, uint8_t device) {
 		break;
 	case xbee_menu:
 		strcpy(menu_commands[0], "PC");
-		strcpy(menu_commands[1], "Connct");
+		strcpy(menu_commands[1], "Command");
 		strcpy(menu_commands[2], "Mode");
-		strcpy(menu_commands[3], "(Don't");
-		strcpy(menu_commands[4], "Leave)");
-		for(uint16_t i =5; i<8; ++i){
+		for(uint16_t i =3; i<8; ++i){
 			menu_commands[i][0]='\0';
 		}
-		strcpy(menu_commands[8],"Leave");
+		strcpy(menu_commands[8],"Back");
 		break;
 	}
 	for (uint8_t i = 1; i <= 9; ++i) {
@@ -131,10 +136,6 @@ void button_pressed(uint8_t button) {
 			break;
 		case 8: // Settings
 			display_menu(settings_menu, 1, 0);
-			for (uint8_t i = 5; i <= 8; ++i) {
-				disable_button(i);
-			}
-			update_buttons();
 			break;
 		case 9: // Next
 			display_menu(main_menu, (current_page != MAIN_MENU_PAGE_COUNT) ? (current_page + 1) : 1, 0);
@@ -263,9 +264,7 @@ void button_pressed(uint8_t button) {
 	case xbee_menu:
 		switch(button){
 		case 9:
-			display_menu(main_menu,1,0);
-			enable_all_buttons();
-			update_buttons();
+			display_menu(settings_menu,1,0);
 			break;
 		default:
 			break;
