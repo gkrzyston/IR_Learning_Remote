@@ -20,6 +20,7 @@ extern uint16_t data[];
 extern TIM_HandleTypeDef htim2;
 extern uint8_t received;
 extern uint32_t dataLen;
+extern uint8_t timeoutoff;
 extern void GlobalTransmit(uint16_t [dataLen]);
 
 // Store Menu Commands
@@ -48,7 +49,9 @@ void display_menu(Menu menu, uint8_t page, uint8_t device) {
 	case settings_menu:
 		strcpy(menu_commands[0], "PC Connect");
 		strcpy(menu_commands[1], "Learn Cmd");
-		for (uint8_t i = 2; i <= 7; ++i) {
+		strcpy(menu_commands[2],"TimeoutOn");
+		strcpy(menu_commands[3],"TimeoutOff");	
+		for (uint8_t i = 4; i <= 7; ++i) {
 			menu_commands[i][0] = '\0';
 		}
 		strcpy(menu_commands[8], "Main Menu");
@@ -115,7 +118,7 @@ void button_pressed(uint8_t button) {
 			break;
 		case 8: // Settings
 			display_menu(settings_menu, 1, 0);
-			for (uint8_t i = 3; i <= 8; ++i) {
+			for (uint8_t i = 5; i <= 8; ++i) {
 				disable_button(i);
 			}
 			update_buttons();
@@ -142,6 +145,16 @@ void button_pressed(uint8_t button) {
 			// Prompt user to press remote button.
 			display_menu(learn_device_menu, 1, 0);
 			enable_all_buttons();
+			break;
+		case 3:
+			timeoutoff = 0;
+			display_menu(main_menu, 1,0);
+			enable_all_buttons();
+			break;
+		case 4:
+			timeoutoff = 1;
+			display_menu(main_menu, 1,0);
+			enable_all_buttons();	
 			break;
 		case 9: // Main Menu
 			display_menu(main_menu, 1, 0);
@@ -223,7 +236,7 @@ void button_pressed(uint8_t button) {
 		default: // Learn IR Signal based on button!
 			disable_all_buttons();
 			update_buttons();
-			display_menu(awaiting_menu,1,0);
+			display_menu(awaiting_menu,current_page,0);
 			Learn_command(button - 1 + (6 * (current_page - 1)),active_device);
 			break;
 		}

@@ -44,7 +44,7 @@ typedef enum Colors{black = 0x00, white = 0x01} Color;
 void init_displays(void);
 // refreshes the display
 void update_display(uint8_t display);
-// refreshes all displays
+// refreshes all displays with the current buffer
 void update_all_displays();
 
 /* Buffer Functions */

@@ -18,5 +18,5 @@ typedef enum Menus{main_menu, settings_menu, device_menu
 
 void display_menu(Menu menu, uint8_t page, uint8_t device);
 void button_pressed(uint8_t button);
-
+void refresh_menu();
 #endif /* INC_MENU_H_ */
