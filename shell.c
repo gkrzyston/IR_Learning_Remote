@@ -74,6 +74,8 @@ int main()
                 }
                 issue_xbee_command(VIEW_DEVICE, argv + 1);
             }
+        } else if (!strcasecmp(command, "tap")) {                      // TAP
+            write_interface("1");
         } else {
             print_usage();
         }

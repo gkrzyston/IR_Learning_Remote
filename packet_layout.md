@@ -20,18 +20,30 @@ CLIENT TX:
 ```
 ## Export Configuration:
 ```
-HOST TX: 39942 byte transmission
+HOST TX: 2219 byte transmission
     command code:   xcon
-    bytes[39941:0]: <configuration file>
+    bytes[2218:0]:  <configuration file>
 CLIENT TX:
-    N/A
+    Acknowledge:    1
+HOST TX: 2219 byte transmission
+    bytes[2218:0]:  <configuration file>
+CLIENT TX:
+    Acknowledge:    1
+...
 ```
 ## Import Configuration:
 ```
 HOST TX:
     icon
-CLIENT TX: 39942 byte transmission
-    bytes[39941:0]: <configuration file>
+CLIENT TX: 2219 byte transmission
+    bytes[2218:0]: <configuration file>
+HOST TX:
+    Acknowledge:    1
+CLIENT TX: 2219 byte transmission
+    bytes[2218:0]: <configuration file>
+HOST TX:
+    Acknowledge:    1
+...
 ```
 ## View Configuration:
 ```
@@ -49,7 +61,7 @@ CLIENT TX: 600 byte transmission
 ```
 ## Configuration File Format:
 Currently, there are 18 devices and 24 commands per device, '\n' deliminated.  This configuration format would need to be modified to support a customizable number of devices/buttons.
-Total size of configuration file: 39942 bytes.
+Total size of configuration file: 39942 bytes. Sent in 2219 byte chunks (separated by device).
 ```
 11 bytes:      <Device 1 Name>\n
 11 bytes:      <Command 1 Name>\n

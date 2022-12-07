@@ -44,7 +44,7 @@ int8_t handshake() {
 /* Wait for the device to say it is ready to recieve the command */
 /* then issue command with optional arguments */
 int8_t issue_xbee_command(Command command, char** argv) {
-    char msg_buf[8192];
+    char msg_buf[65536];
     msg_buf[0] = '\0';
     uint16_t idx = 0;
     int c;
@@ -61,9 +61,11 @@ int8_t issue_xbee_command(Command command, char** argv) {
             write_interface("edev");
             // Send Device Number
             strcpy(msg_buf, argv[0]);
-            strcat(msg_buf, "\n");
+            if (argv[0][1] == '\0')
+                strcat(msg_buf, "\n");
             // Send Updated Name
             prompt_user_input(msg_buf);
+            strcat(msg_buf, "\0");
             // Write Packets
             write_interface(msg_buf);
             printf("Device Name Updated.\n");
@@ -85,13 +87,15 @@ int8_t issue_xbee_command(Command command, char** argv) {
             write_interface("ecom");
             // Send Device Number
             strcpy(msg_buf, argv[0]);
-            strcat(msg_buf, "\n");
+            if (argv[0][1] == '\0')
+                strcat(msg_buf, "\n");
             // Send Command Number
             strcat(msg_buf, argv[1]);
-            strcat(msg_buf, "\n");
+            if (argv[1][1] == '\0')
+                strcat(msg_buf, "\n");
             // Send Updated Name
             prompt_user_input(msg_buf);
-            strcat(msg_buf, "\n");
+            strcat(msg_buf, "\0");
             // Write Packets
             write_interface(msg_buf);
             printf("Command Name Updated.\n");
@@ -100,19 +104,24 @@ int8_t issue_xbee_command(Command command, char** argv) {
         case EXPORT_CONFIGURATION: {
             write_interface("xcon");
             saved_conf = fopen(".remote_config", "r");
-            while (!feof(saved_conf)) {
-                c = fgetc(saved_conf);
-                msg_buf[idx++] = (char)c;
+            msg_buf[2219] = '\0';
+            for (uint8_t j = 0; j < 18; ++j) {
+                idx = 0;
+                while (!feof(saved_conf) && idx < 2219) {
+                    c = fgetc(saved_conf);
+                    msg_buf[idx++] = (char)c;
+                }
+                write_interface(msg_buf);
+                while (!read_acknowledgement());
             }
-            msg_buf[idx - 1] = '\0';
-            write_interface(msg_buf);
+            fclose(saved_conf);
             printf("Remote State Overwritten.\n");
             break;
         }
         case IMPORT_CONFIGURATION: {
             write_interface("icon");
-            read_interface(msg_buf);
             saved_conf = fopen(".remote_config", "w");
+            read_interface(msg_buf);
             fprintf(saved_conf, "%s", msg_buf);
             fclose(saved_conf);
             printf("Remote State Saved.\n");
@@ -196,6 +205,13 @@ void prompt_user_input(char* dest) {
     if (strlen(input) >= 12) {
         printf("\tWarning: Device name too long, concatenated to 10 characters.\n");
         input[11] = '\n';
+        input[12] = '\0';
+    }
+
+    if (strlen(input) < 12) {
+        for (uint8_t i = strlen(input); i < 12; ++i) {
+            input[i] = '\n';
+        }
         input[12] = '\0';
     }
 
