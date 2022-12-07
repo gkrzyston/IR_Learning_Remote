@@ -2,8 +2,13 @@
 Creating an IR Learning Remote for our EECS 373 Final Project.
 ## Organization
 ### Trunk:
-Trunk should house the current IOC, main.c and other files which will be used to integrate each of our modules into.  Before merging into trunk, be sure that your module is compatible with the IOC and main.c currently present in this branch (or ensure that none of your changes adversely affect any other functionality) so we can avoid compatibility issues.
-### Development Branches:
-All code being developed for the project should find its way into the applicable dev/<module> branch when it is in a working state.  In-progress work which does not compile or work properly can be stored at dev/<module>/<your_name>.
+Trunk houses the current stable build for the STM32 dev board.  This can easily be flashed to the board using the STM32CubeIDE and will initialize the controller with a default set of devices and commands which are ready to be programmed!
 ### Command Line Interface:
-The CLI is housed under dev/interface.  Do not push code that does not compile.  Temporary files to sync between computers can be stored on dev/interface/<your_name> if needed.
+The CLI is housed under dev/interface.  Clone it to interact with the remote! (Note: Currently this is only compatible with Linux and uses /dev/ttyUSB0 by default.  The port is changeable at the top of serial_interface.c, visit dev/interface for more information)
+#### Usage:
+To edit the remote's current settings:
+```
+edit   [option]    [suboption(s)]
+       device      device number
+       command     device number     command number
+```
