@@ -54,7 +54,7 @@ void print_devices() {
 
 void print_command(uint8_t device, uint8_t command) {
 	char data_buffer[3];
-	itoa(controller.devices[device].commands[command].UART_Data, data_buffer, 16);
+	itoa(controller.devices[device].commands[command].Data, data_buffer, 16);
 
 	HAL_UART_Transmit(&huart1, (uint8_t*)(controller.devices[device].commands[command].desc),strlen(controller.devices[device].commands[command].desc),0xFFFF);
 	HAL_UART_Transmit(&huart1, (uint8_t*)section_deliminator, 1, 0xFFFF);

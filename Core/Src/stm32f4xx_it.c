@@ -45,6 +45,7 @@ uint8_t firsttime = 1;
 uint32_t index = 0;
 extern uint16_t data[];
 extern uint32_t dataLen;
+extern uint8_t received;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,7 +61,6 @@ extern uint32_t dataLen;
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim5;
-extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -222,26 +222,14 @@ void TIM2_IRQHandler(void)
 	index++;
 	if(index == dataLen){
 		HAL_TIM_IC_Stop_IT(&htim2, TIM_CHANNEL_1);		//Transmit();
+    firsttime = 1;
+    received = 1;
 	}
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
 
   /* USER CODE END TIM2_IRQn 1 */
-}
-
-/**
-  * @brief This function handles USART1 global interrupt.
-  */
-void USART1_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART1_IRQn 0 */
-
-  /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
-  /* USER CODE BEGIN USART1_IRQn 1 */
-
-  /* USER CODE END USART1_IRQn 1 */
 }
 
 /**

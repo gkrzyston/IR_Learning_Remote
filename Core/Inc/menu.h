@@ -7,8 +7,11 @@
 
 #ifndef INC_MENU_H_
 #define INC_MENU_H_
+#include <stdint.h>
 
-typedef enum Menus{main_menu, settings_menu, device_menu} Menu;
+typedef enum Menus{main_menu, settings_menu, device_menu
+                    ,learn_device_menu,learn_command_menu,
+                    awaiting_menu} Menu;
 
 #define MAIN_MENU_PAGE_COUNT 3
 #define DEVICE_MENU_PAGE_COUNT 4

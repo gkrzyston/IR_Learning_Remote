@@ -1,4 +1,4 @@
-Core/Src/menu.o: ../Core/Src/menu.c ../Core/Inc/menu.h \
+Core/Src/menu.o: ../Core/Src/menu.c ../Core/Src/../Inc/menu.h \
  ../Core/Inc/controller.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
@@ -36,7 +36,7 @@ Core/Src/menu.o: ../Core/Src/menu.c ../Core/Inc/menu.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/ssd1306.h ../Core/Inc/font.h ../Core/Inc/buttons.h \
  ../Core/Inc/ssd1306.h
-../Core/Inc/menu.h:
+../Core/Src/../Inc/menu.h:
 ../Core/Inc/controller.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:

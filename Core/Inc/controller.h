@@ -15,7 +15,7 @@
 #include "ssd1306.h"
 
 typedef struct Commands {
-	uint8_t UART_Data[80];
+	uint16_t Data[80]; //Change if Datasize changes
 	/*
 	 * The shortened description is used on the button array displays.
 	*/

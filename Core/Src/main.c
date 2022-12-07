@@ -37,7 +37,7 @@
 /* USER CODE BEGIN PD */
 // how long the buttons flash after being pressed in milliseconds
 #define BUTTON_FLASH_DURATION 600
-#define dataL 66
+#define dataL 80
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -69,6 +69,7 @@ uint8_t sync = 0;
 uint16_t data[dataL] = {0};
 int dataPoint =0;
 uint32_t dataLen = dataL;
+uint8_t received = 0;
 
 /* USER CODE END PV */
 
@@ -136,7 +137,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim5);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-  HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); //Starts timer 2
+  //HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1); //Starts timer 2
   __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2,50);
   __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, 999); // Adjust LED Brightness
   initialize_buttons();
@@ -158,7 +159,7 @@ int main(void)
 	  if(!HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_13)){
 		  while(!HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_13));
 		  for(int i =0; i<2;++i)
-			  Transmit();
+			  GlobalTransmit();
 	  }
 	  //ADC testing code
 	  uint32_t ADC_VAL;
@@ -550,7 +551,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 511;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 999;
+  htim4.Init.Period = 1999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
@@ -754,13 +755,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			++i;
 			if (!(i % 4)) {
 				// toggle every 200 ms
-				if ((current_menu != settings_menu) || (last_pressed == 1 || last_pressed == 2 || last_pressed == 9))
+				if ((current_menu != awaiting_menu) && ((current_menu != settings_menu) || (last_pressed == 1 || last_pressed == 2 || last_pressed == 9)))
 					toggle_button(last_pressed);
 				// invert display
 				update_buttons();
 			}
 			else if (i > BUTTON_FLASH_DURATION / 50) {
-				if (current_menu != settings_menu || last_pressed == 1 || last_pressed == 2 || last_pressed == 9)
+				if ((current_menu != awaiting_menu) && ((current_menu != settings_menu) || last_pressed == 1 || last_pressed == 2 || last_pressed == 9))
 					enable_button(last_pressed);
 				else disable_button(last_pressed);
 				update_buttons();

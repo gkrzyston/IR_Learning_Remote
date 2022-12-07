@@ -9,6 +9,6 @@
 ../Core/Src/controller.c:82:6:delete_device	24	static
 ../Core/Src/controller.c:100:6:export_device	16	static
 ../Core/Src/controller.c:119:6:rename_device	16	static
-../Core/Src/controller.c:122:6:swap_device	2216	static
+../Core/Src/controller.c:122:6:swap_device	4160	static
 ../Core/Src/controller.c:131:6:rename_command	16	static
 ../Core/Src/controller.c:148:6:export_configuration	16	static
