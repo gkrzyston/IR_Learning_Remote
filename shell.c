@@ -28,37 +28,51 @@ int main()
 
         /* Act based on user command */
         if (!strcasecmp(command, "quit")) {
-            issue_xbee_command(QUIT, 0, NULL);
+            issue_xbee_command(QUIT, NULL);
             return 0;
-        } else if (!strcasecmp(command, "edit")) {
+        } else if (!strcasecmp(command, "edit")) {                      // EDIT
             if (!strcasecmp(argv[0], "device")) {
                 if (argc != 2) {
                     print_usage();
                     continue;
                 }
-                issue_xbee_command(EDIT_DEVICE, 1, argv + 1);
+                issue_xbee_command(EDIT_DEVICE, argv + 1);
             } else if (!strcasecmp(argv[0], "command")) {
                 if (argc != 3) {
                     print_usage();
                     continue;
                 }
-                issue_xbee_command(EDIT_COMMAND, 2, argv + 1);
+                issue_xbee_command(EDIT_COMMAND, argv + 1);
             }
-        } else if (!strcasecmp(command, "export")) {
+        } else if (!strcasecmp(command, "export")) {                    // EXPORT
             if (!argc) {
                 print_usage();
                 continue;
             }
             if (!strcasecmp(argv[0], "configuration")) {
-                issue_xbee_command(EXPORT_CONFIGURATION, 0, NULL);
+                issue_xbee_command(EXPORT_CONFIGURATION, NULL);
             }
-        } else if (!strcasecmp(command, "import")) {
+        } else if (!strcasecmp(command, "import")) {                    // IMPORT
             if (!argc) { 
                 print_usage(); 
                 continue; 
             }
             if (!strcasecmp(argv[0], "configuration")) {
-                issue_xbee_command(IMPORT_CONFIGURATION, 0, NULL);
+                issue_xbee_command(IMPORT_CONFIGURATION, NULL);
+            }
+        } else if (!strcasecmp(command, "view")) {                      // VIEW
+            if (!strcasecmp(argv[0], "configuration")) {
+                if (argc != 1) {
+                    print_usage();
+                    continue;
+                }
+                issue_xbee_command(VIEW_CONFIGURATION, argv + 1);
+            } else if (!strcasecmp(argv[0], "device")) {
+                if (argc != 2) {
+                    print_usage();
+                    continue;
+                }
+                issue_xbee_command(VIEW_DEVICE, argv + 1);
             }
         } else {
             print_usage();

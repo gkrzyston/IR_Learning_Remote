@@ -43,7 +43,7 @@ int8_t handshake() {
 
 /* Wait for the device to say it is ready to recieve the command */
 /* then issue command with optional arguments */
-int8_t issue_xbee_command(Command command, int argc, char** argv) {
+int8_t issue_xbee_command(Command command, char** argv) {
     char msg_buf[8192];
     msg_buf[0] = '\0';
     uint16_t idx = 0;
