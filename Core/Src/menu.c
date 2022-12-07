@@ -97,6 +97,17 @@ void display_menu(Menu menu, uint8_t page, uint8_t device) {
 			menu_commands[i][0]= '\0';
 		}
 		break;
+	case xbee_menu:
+		strcpy(menu_commands[0], "PC");
+		strcpy(menu_commands[1], "Connct");
+		strcpy(menu_commands[2], "Mode");
+		strcpy(menu_commands[3], "(Don't");
+		strcpy(menu_commands[4], "Leave)");
+		for(uint16_t i =5; i<8; ++i){
+			menu_commands[i][0]='\0';
+		}
+		strcpy(menu_commands[8],"Leave");
+		break;
 	}
 	for (uint8_t i = 1; i <= 9; ++i) {
 		erase_buffer();
@@ -138,6 +149,11 @@ void button_pressed(uint8_t button) {
 		switch(button) {
 		case 1:
 			init_xbee_communication();
+			display_menu(xbee_menu,1,0);
+			for (uint8_t i = 1; i <= 7; ++i) {
+				disable_button(i);
+			}	
+			update_buttons;
 			// Inform User that they are in PC mode somehow
 			break;
 		case 2:
@@ -241,6 +257,18 @@ void button_pressed(uint8_t button) {
 			break;
 		}
 		in_device_menu = 1;
+		break;
+	case xbee_menu:
+		switch(button){
+		case 9:
+			display_menu(main_menu,1,0);
+			enable_all_buttons();
+			update_buttons();
+			break;
+		default:
+			break;
+		}
+		in_device_menu =0;
 		break;
 	default:	
 		break;

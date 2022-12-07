@@ -11,7 +11,7 @@
 
 typedef enum Menus{main_menu, settings_menu, device_menu
                     ,learn_device_menu,learn_command_menu,
-                    awaiting_menu} Menu;
+                    awaiting_menu,xbee_menu} Menu;
 
 #define MAIN_MENU_PAGE_COUNT 3
 #define DEVICE_MENU_PAGE_COUNT 4

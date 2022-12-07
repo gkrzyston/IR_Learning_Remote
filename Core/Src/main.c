@@ -827,14 +827,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             if (!(i % 4))
             {
                 // toggle every 200 ms
-                if ((current_menu != awaiting_menu) && ((current_menu != settings_menu) || (last_pressed == 1 || last_pressed == 2 || last_pressed == 9)))
+                if ((current_menu != xbee_menu) && (current_menu != awaiting_menu) && ((current_menu != settings_menu) || (last_pressed == 1 || last_pressed == 2 || last_pressed == 9)))
                     toggle_button(last_pressed);
                 // invert display
                 update_buttons();
             }
             else if (i > BUTTON_FLASH_DURATION / 50)
             {
-                if ((current_menu != awaiting_menu) && ((current_menu != settings_menu) || last_pressed == 1 || last_pressed == 2 || last_pressed == 9))
+                if ((current_menu != xbee_menu) && (current_menu != awaiting_menu) && ((current_menu != settings_menu) || last_pressed == 1 || last_pressed == 2 || last_pressed == 9))
                     enable_button(last_pressed);
                 else
                     disable_button(last_pressed);
